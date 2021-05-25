@@ -20,3 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');

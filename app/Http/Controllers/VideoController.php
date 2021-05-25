@@ -9,6 +9,16 @@ use App\Http\Requests\VideoPostRequest;
 
 class VideoController extends Controller
 {
+    public function index(): Response
+    {
+        $videos = Video::query()
+            ->published()
+            ->orderByDesc('created_at')
+            ->paginate(config('app.pagination'));
+
+        return response($videos, Response::HTTP_OK);
+    }
+
     public function store(VideoPostRequest $request): Response
     {
         $desc = $request->has('description')
