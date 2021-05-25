@@ -5,24 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Video;
+use App\Http\Requests\VideoPostRequest;
 
 class VideoController extends Controller
 {
-    public function store(Request $request): Response
+    public function store(VideoPostRequest $request): Response
     {
-        $postData = $this->validate($request, [
-            'url' => ['required', 'url'],
-            'title' => ['required'],
-            'description' => ['sometimes'],
-        ]);
-
         $desc = $request->has('description')
             ? $request->input('description')
             :'';
 
         $video = Video::create([
-            'url' => $postData['url'],
-            'title' => $postData['title'],
+            'url' => $request->input('url'),
+            'title' => $request->input('title'),
             'description' => $desc,
             'user_id' => 1,
             'type' => 'youtube',

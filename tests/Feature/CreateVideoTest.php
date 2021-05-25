@@ -19,12 +19,12 @@ class CreateVideoTest extends TestCase
         $this->json('POST',route('videos.store'), [
             'url' => $url,
             'title' => 'test title',
-            'description' => 'test',
         ]);
 
         $this->assertDatabaseHas('videos', [
             'url' => $url,
-            'description' => 'test',
+            'title' => 'test title',
+            'description' => '',
         ]);
     }
 
