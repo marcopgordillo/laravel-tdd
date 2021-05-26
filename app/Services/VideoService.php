@@ -5,10 +5,11 @@ namespace App\Services;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Video;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class VideoService
 {
-    public function addVideoSubmission(array $postData, User $user)
+    public function addVideoSubmission(array $postData, User $user): Video
     {
         $desc = '';
 
@@ -26,5 +27,12 @@ class VideoService
         ]);
 
         return $video;
+    }
+
+    public function validateYoutubeUrl(string $url): bool
+    {
+        $youtubeRegexp = "/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/";
+
+        return preg_match($youtubeRegexp, $url) === 1;
     }
 }

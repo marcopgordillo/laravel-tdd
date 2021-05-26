@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\YoutubeUrlRule;
 
 class VideoPostRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class VideoPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'url' => ['required', 'url'],
+            'url' => ['required', 'url', new YoutubeUrlRule],
             'title' => ['required'],
             'description' => ['sometimes'],
         ];
