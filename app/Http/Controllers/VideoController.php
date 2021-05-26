@@ -6,9 +6,18 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Video;
 use App\Http\Requests\VideoPostRequest;
+use App\Services\VideoService;
+use Illuminate\Support\Facades\Auth;
 
 class VideoController extends Controller
 {
+    private VideoService $videoService;
+
+    public function __construct(VideoService $videoService)
+    {
+        $this->videoService = $videoService;
+    }
+
     public function index(): Response
     {
         $videos = Video::query()
@@ -21,18 +30,9 @@ class VideoController extends Controller
 
     public function store(VideoPostRequest $request): Response
     {
-        $desc = $request->has('description')
-            ? $request->input('description')
-            :'';
+        $postData = array_replace([], $request->input());
 
-        $video = Video::create([
-            'url' => $request->input('url'),
-            'title' => $request->input('title'),
-            'description' => $desc,
-            'user_id' => auth()->user()->id,
-            'type' => 'youtube',
-            'is_published' => false,
-        ]);
+        $video = $this->videoService->addVideoSubmission($postData, Auth::user());
 
         return response($video, Response::HTTP_CREATED);
     }

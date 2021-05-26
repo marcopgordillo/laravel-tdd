@@ -21,7 +21,7 @@ class CreateVideoTest extends TestCase
         $this->actingAs($user)->json('POST',route('videos.store'), [
             'url' => $url,
             'title' => 'test title',
-        ]);
+        ])->assertStatus(201);
 
         $this->assertDatabaseHas('videos', [
             'url' => $url,
@@ -63,7 +63,7 @@ class CreateVideoTest extends TestCase
         // dd(json_decode($resp->getContent(), true));
 
         $resp->assertJson(function (AssertableJson $json) use ($url) {
-            $json->where('is_published', false)
+            $json->where('is_published', 0)
                 ->etc();
         });
     }
