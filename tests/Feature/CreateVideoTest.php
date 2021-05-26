@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Testing\Fluent\AssertableJson;
+use App\Models\User;
 
 class CreateVideoTest extends TestCase
 {
@@ -15,8 +16,9 @@ class CreateVideoTest extends TestCase
     public function it_creates_a_new_video(): void
     {
         $url = $this->faker->url();
+        $user = User::factory()->create();
 
-        $this->json('POST',route('videos.store'), [
+        $this->actingAs($user)->json('POST',route('videos.store'), [
             'url' => $url,
             'title' => 'test title',
         ]);
@@ -32,8 +34,9 @@ class CreateVideoTest extends TestCase
     public function it_returns_video_in_response(): void
     {
         $url = $this->faker->url();
+        $user = User::factory()->create();
 
-        $resp = $this->json('POST', route('videos.store'), [
+        $resp = $this->actingAs($user)->json('POST', route('videos.store'), [
             'url' => $url,
             'title' => 'test title',
         ]);
@@ -50,8 +53,9 @@ class CreateVideoTest extends TestCase
     public function it_returns_an_unpublished_video(): void
     {
         $url = $this->faker->url();
+        $user = User::factory()->create();
 
-        $resp = $this->json('POST', route('videos.store'), [
+        $resp = $this->actingAs($user)->json('POST', route('videos.store'), [
             'url' => $url,
             'title' => 'test title',
         ]);
@@ -68,8 +72,9 @@ class CreateVideoTest extends TestCase
     public function it_adds_description_if_sent(): void
     {
         $url = $this->faker->url();
+        $user = User::factory()->create();
 
-        $resp = $this->json('POST', route('videos.store'), [
+        $resp = $this->actingAs($user)->json('POST', route('videos.store'), [
             'url' => $url,
             'title' => 'test title',
             'description' => 'test',
@@ -86,11 +91,32 @@ class CreateVideoTest extends TestCase
     /** @test */
     public function it_validates_required_fields(): void
     {
-        $this->json('POST', route('videos.store'), [])
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->json('POST', route('videos.store'), [])
             ->assertStatus(422)
             ->assertJson(function (AssertableJson $json) {
                 $json->has('errors.url')
                     ->etc();
             });
+    }
+
+    public function test_adds_current_user_id_in_video(): void
+    {
+        $url = $this->faker->url;
+        User::factory(5)->create();
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->json('POST',route('videos.store'), [
+            'url' => $url,
+            'title' => 'test title',
+        ]);
+
+        $this->assertDatabaseHas('videos', [
+            'url' => $url,
+            'title' => 'test title',
+            'user_id' => $user->id,
+        ]);
+
     }
 }

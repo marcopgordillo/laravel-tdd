@@ -19,5 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
-Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
+    Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
+});

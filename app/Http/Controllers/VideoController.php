@@ -29,7 +29,7 @@ class VideoController extends Controller
             'url' => $request->input('url'),
             'title' => $request->input('title'),
             'description' => $desc,
-            'user_id' => 1,
+            'user_id' => auth()->user()->id,
             'type' => 'youtube',
             'is_published' => false,
         ]);
