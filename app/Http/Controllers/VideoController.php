@@ -32,7 +32,7 @@ class VideoController extends Controller
     public function store(VideoPostRequest $request): Response
     {
         $postData = array_replace([], $request->input());
-        Log::info('Store Controller');
+        // Log::info('Store Controller');
 
         $video = $this->videoService->addVideoSubmission($postData, Auth::user());
 
