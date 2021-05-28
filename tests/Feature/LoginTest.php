@@ -11,11 +11,7 @@ use Illuminate\Testing\Fluent\AssertableJson;
 class LoginTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+
     public function test_sends_user_token_on_correct_credentials()
     {
         $user = User::factory()->create();
