@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,8 @@ use App\Http\Controllers\VideoController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/user/auth', [LoginController::class, 'handleLogin'])->name('user.login');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/videos', [VideoController::class, 'store'])->name('videos.store');
